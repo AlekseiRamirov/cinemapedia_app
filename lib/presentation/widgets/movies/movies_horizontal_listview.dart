@@ -3,7 +3,7 @@ import 'package:cinemapedia_app/config/helpers/human_format.dart';
 import 'package:cinemapedia_app/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MoviesHorizontalListview extends StatelessWidget {
+class MoviesHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subTitle;
@@ -18,19 +18,48 @@ class MoviesHorizontalListview extends StatelessWidget {
   });
 
   @override
+  State<MoviesHorizontalListview> createState() =>
+      _MoviesHorizontalListviewState();
+}
+
+class _MoviesHorizontalListviewState extends State<MoviesHorizontalListview> {
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (widget.loadNextPage == null) return;
+
+      if ((scrollController.position.pixels + 200) >=
+          scrollController.position.maxScrollExtent) {
+        widget.loadNextPage!();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 350,
       child: Column(
         children: [
-          if (title != null || subTitle != null) _Title(title, subTitle),
+          if (widget.title != null || widget.subTitle != null)
+            _Title(widget.title, widget.subTitle),
           Expanded(
             child: ListView.builder(
+              controller: scrollController,
               physics: BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemCount: movies.length,
+              itemCount: widget.movies.length,
               itemBuilder: (context, index) {
-                final movie = movies[index];
+                final movie = widget.movies[index];
                 return _ItemSlide(movie: movie);
               },
             ),
@@ -96,9 +125,7 @@ class _ItemSlide extends StatelessWidget {
                 Icon(Icons.star_half, color: Colors.orange),
                 Text(
                   HumanFormat.numberDecimal(movie.voteAverage),
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: Colors.orange,
-                  ),
+                  style: textTheme.bodyMedium?.copyWith(color: Colors.orange),
                 ),
                 Spacer(),
 
