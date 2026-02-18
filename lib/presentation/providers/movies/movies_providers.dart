@@ -2,6 +2,7 @@ import 'package:cinemapedia_app/domain/entities/movie.dart';
 import 'package:cinemapedia_app/presentation/providers/movies/movies_repository_provider.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+// SECTION FOR PROVIDERS
 final nowPlayingMoviesProvider =
     StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
       final fetchMoreMovies = ref.watch(movieRepositoryProvider).getNowPlaying;
@@ -9,6 +10,15 @@ final nowPlayingMoviesProvider =
       return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
     });
 
+final popularMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+      final fetchMoreMovies = ref.watch(movieRepositoryProvider).getPopular;
+
+      return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+    });
+
+
+//SECTION FOR CONTROLLER
 typedef MovieCallback = Future<List<Movie>> Function({int page});
 
 class MoviesNotifier extends StateNotifier<List<Movie>> {

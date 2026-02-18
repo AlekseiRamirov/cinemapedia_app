@@ -1,25 +1,32 @@
 import 'package:cinemapedia_app/domain/entities/movie.dart';
-import 'package:cinemapedia_app/infrastructure/models/themoviedb/movie_from_moviedb.dart';
+import 'package:cinemapedia_app/infrastructure/models/themoviedb/themoviedb_model.dart';
+import 'package:cinemapedia_app/infrastructure/models/themoviedb/themoviedb_response.dart';
 
 class MovieMapper {
-  static Movie movieDbToEntity(MovieFromMovieDb movieFromMovieDB) => Movie(
-    adult: movieFromMovieDB.adult,
-    backdropPath: (movieFromMovieDB.backdropPath != '')
-    ? 'https://image.tmdb.org/t/p/w500${movieFromMovieDB.backdropPath}'
-    : 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png',
-    genreIds:movieFromMovieDB.genreIds.map((each) => each.toString()).toList(),
-    id: movieFromMovieDB.id,
-    originalLanguage: movieFromMovieDB.originalLanguage,
-    originalTitle: movieFromMovieDB.originalTitle,
-    overview: movieFromMovieDB.overview,
-    popularity: movieFromMovieDB.popularity,
-    posterPath: (movieFromMovieDB.posterPath != '')
-    ? 'https://image.tmdb.org/t/p/w500${movieFromMovieDB.posterPath}'
-    : 'no-poster',
-    releaseDate: movieFromMovieDB.releaseDate,
-    title: movieFromMovieDB.title,
-    video: movieFromMovieDB.video,
-    voteAverage: movieFromMovieDB.voteAverage,
-    voteCount: movieFromMovieDB.voteCount,
+  static Movie movieDbToEntity(TheMovieDbModel theMovieDbModel) => Movie(
+    adult: theMovieDbModel.adult,
+    backdropPath: (theMovieDbModel.backdropPath != '')
+        ? 'https://image.tmdb.org/t/p/w500${theMovieDbModel.backdropPath}'
+        : 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png',
+    genreIds: theMovieDbModel.genreIds.map((each) => each.toString()).toList(),
+    id: theMovieDbModel.id,
+    originalLanguage: theMovieDbModel.originalLanguage,
+    originalTitle: theMovieDbModel.originalTitle,
+    overview: theMovieDbModel.overview,
+    popularity: theMovieDbModel.popularity,
+    posterPath: (theMovieDbModel.posterPath != '')
+        ? 'https://image.tmdb.org/t/p/w500${theMovieDbModel.posterPath}'
+        : 'no-poster',
+    releaseDate: theMovieDbModel.releaseDate,
+    title: theMovieDbModel.title,
+    video: theMovieDbModel.video,
+    voteAverage: theMovieDbModel.voteAverage,
+    voteCount: theMovieDbModel.voteCount,
   );
+
+  static List<Movie> theMovieDbToListEntity(MovieDbResponse movieDbResponse) {
+    return movieDbResponse.results
+        .map((eachMovie) => MovieMapper.movieDbToEntity(eachMovie))
+        .toList();
+  }
 }
