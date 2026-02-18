@@ -14,21 +14,8 @@ class ThemoviedbDatasource extends MoviesDatasource {
     ),
   );
 
-  /*Implementation of the methods in abstract class
-  */
-  List<Movie> _jsonToMovies(Map<String, dynamic> json) {
-    // Process the response json to allow work with data
-    final movieDbResponse = MovieDbResponse.fromJson(json);
-
-    final List<Movie> movies = MovieMapper.theMovieDbToListEntity(
-      movieDbResponse,
-    );
-
-    return movies;
-  }
-
-  Future<List<Movie>> _getListMovies(
-    String url, {
+  Future<List<Movie>> _getListMovies({
+    required String url, 
     Map<String, dynamic>? queryParameters,
   }) async {
     // Do the HTTP petition to API TheMovieDB
@@ -51,7 +38,7 @@ class ThemoviedbDatasource extends MoviesDatasource {
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     return _getListMovies(
-      '/movie/now_playing',
+      url: '/movie/now_playing',
       queryParameters: {'page': page},
     );
   }
@@ -59,7 +46,23 @@ class ThemoviedbDatasource extends MoviesDatasource {
   @override
   Future<List<Movie>> getPopular({int page = 1}) async {
     return _getListMovies(
-      '/movie/popular',
+      url: '/movie/popular',
+      queryParameters: {'page': page},
+    );
+  }
+  
+  @override
+  Future<List<Movie>> getTopRated({int page = 1}) async {
+    return _getListMovies(
+      url: '/movie/top_rated',
+      queryParameters: {'page': page},
+    );
+  }
+  
+  @override
+  Future<List<Movie>> getUpcoming({int page = 1}) async {
+    return _getListMovies(
+      url: '/movie/upcoming',
       queryParameters: {'page': page},
     );
   }

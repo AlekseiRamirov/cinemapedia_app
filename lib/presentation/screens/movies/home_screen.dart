@@ -32,12 +32,16 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
     ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
   }
 
   @override
   Widget build(BuildContext context) {
     final List<Movie> allNowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final List<Movie> popularMovies = ref.watch(popularMoviesProvider);
+    final List<Movie> topRatedMovies = ref.watch(topRatedMoviesProvider);
+    final List<Movie> upcomingMovies = ref.watch(upcomingMoviesProvider);
     final List<Movie> nowPlayingMoviesSlide = ref.watch(
       moviesSlideShowProvider,
     );
@@ -73,6 +77,24 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   subTitle: 'Monday 16',
                   loadNextPage: () {
                     ref.read(popularMoviesProvider.notifier).loadNextPage();
+                  },
+                ),
+
+                MoviesHorizontalListview(
+                  movies: topRatedMovies,
+                  title: 'TopRated Movies',
+                  subTitle: 'Monday 16',
+                  loadNextPage: () {
+                    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+                  },
+                ),
+
+                MoviesHorizontalListview(
+                  movies: upcomingMovies,
+                  title: 'Upcoming Movies',
+                  subTitle: 'Monday 16',
+                  loadNextPage: () {
+                    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
                   },
                 ),
               ],
