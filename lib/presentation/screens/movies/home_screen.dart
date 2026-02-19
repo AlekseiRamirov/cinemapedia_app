@@ -1,6 +1,7 @@
 import 'package:cinemapedia_app/domain/entities/movie.dart';
 import 'package:cinemapedia_app/presentation/providers/movies/movies_providers.dart';
 import 'package:cinemapedia_app/presentation/providers/movies/movies_slideshow_provider.dart';
+import 'package:cinemapedia_app/presentation/providers/movies/start_provider.dart';
 import 'package:cinemapedia_app/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,6 +39,10 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    // Provider to see the first screen loader
+    final startLoading = ref.watch(startLoadingProvider);
+
+    // Provider to manage all movies state
     final List<Movie> allNowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final List<Movie> popularMovies = ref.watch(popularMoviesProvider);
     final List<Movie> topRatedMovies = ref.watch(topRatedMoviesProvider);
@@ -46,61 +51,63 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       moviesSlideShowProvider,
     );
 
-    return CustomLoader();
-
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          floating: true,
-          flexibleSpace: FlexibleSpaceBar(title: CustomAppbar()),
-        ),
-
-        SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            return Column(
-              children: [
-                MoviesSlideshow(movies: nowPlayingMoviesSlide),
-
-                MoviesHorizontalListview(
-                  movies: allNowPlayingMovies,
-                  title: 'Now in Cine',
-                  subTitle: 'Monday 16',
-                  loadNextPage: () {
-                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-                  },
-                ),
-
-                MoviesHorizontalListview(
-                  movies: popularMovies,
-                  title: 'Popular Movies',
-                  subTitle: 'Monday 16',
-                  loadNextPage: () {
-                    ref.read(popularMoviesProvider.notifier).loadNextPage();
-                  },
-                ),
-
-                MoviesHorizontalListview(
-                  movies: topRatedMovies,
-                  title: 'TopRated Movies',
-                  subTitle: 'Monday 16',
-                  loadNextPage: () {
-                    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
-                  },
-                ),
-
-                MoviesHorizontalListview(
-                  movies: upcomingMovies,
-                  title: 'Upcoming Movies',
-                  subTitle: 'Monday 16',
-                  loadNextPage: () {
-                    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
-                  },
-                ),
-              ],
-            );
-          }, childCount: 1),
-        ),
-      ],
+    return Visibility(
+      visible: !startLoading,
+      replacement: CustomLoader(),
+      child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            floating: true,
+            flexibleSpace: FlexibleSpaceBar(title: CustomAppbar()),
+          ),
+      
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              return Column(
+                children: [
+                  MoviesSlideshow(movies: nowPlayingMoviesSlide),
+      
+                  MoviesHorizontalListview(
+                    movies: allNowPlayingMovies,
+                    title: 'Now in Cine',
+                    subTitle: 'Monday 16',
+                    loadNextPage: () {
+                      ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+                    },
+                  ),
+      
+                  MoviesHorizontalListview(
+                    movies: popularMovies,
+                    title: 'Popular Movies',
+                    subTitle: 'Monday 16',
+                    loadNextPage: () {
+                      ref.read(popularMoviesProvider.notifier).loadNextPage();
+                    },
+                  ),
+      
+                  MoviesHorizontalListview(
+                    movies: topRatedMovies,
+                    title: 'TopRated Movies',
+                    subTitle: 'Monday 16',
+                    loadNextPage: () {
+                      ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+                    },
+                  ),
+      
+                  MoviesHorizontalListview(
+                    movies: upcomingMovies,
+                    title: 'Upcoming Movies',
+                    subTitle: 'Monday 16',
+                    loadNextPage: () {
+                      ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+                    },
+                  ),
+                ],
+              );
+            }, childCount: 1),
+          ),
+        ],
+      ),
     );
   }
 }
